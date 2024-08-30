@@ -1,8 +1,7 @@
-﻿internal class Program
+internal class Program
 {
     private static void Main(string[] args)
     {
-
         bool reRun;
         do
         {
@@ -14,13 +13,26 @@
             string studentMname = GetInput("Enter Middle Name: ");
             char middleInitial = studentMname.Length > 0 ? studentMname[0] : '\0'; // Handle empty middle name
 
+            // Prompt user for payment
+            double payment = GetPayment();
+            if (payment < 32000)
+            {
+                Console.WriteLine("Not enough money. Please make sure you provide at least 32,000.");
+                reRun = ShouldRerun();
+                continue; // Skip the rest of the loop if payment is insufficient
+            }
+
             // Define and display the list of courses
             string[] courses = { "BSCS", "BSIT", "BSBA", "BSAIS", "BSA", "BSHM", "BACOMM", "BMMA", "BSTM" };
             DisplayCourses(courses);
 
             // Prompt user to select a course
             string selectedCourse = SelectCourse(courses);
-            Console.WriteLine($"You selected: {selectedCourse}");
+
+
+            Console.WriteLine("------------------------------------------");
+            Console.WriteLine("You are now Enrolled in STI!!");
+            DisplayCourseDescription(selectedCourse);
 
             // Display full name
             Console.WriteLine($"Full name is: {studentLname}, {studentFname} {middleInitial}.");
@@ -39,6 +51,24 @@
     {
         Console.Write(prompt);
         return Console.ReadLine();
+    }
+
+    // Method to get payment amount
+    static double GetPayment()
+    {
+        double payment;
+        while (true)
+        {
+            Console.Write("Enter payment amount: ");
+            if (double.TryParse(Console.ReadLine(), out payment) && payment >= 0)
+            {
+                return payment;
+            }
+            else
+            {
+                Console.WriteLine("Invalid input. Please enter a valid payment amount.");
+            }
+        }
     }
 
     // Method to display list of courses
@@ -69,6 +99,25 @@
         }
     }
 
+    // Method to display the description of the selected course
+    static void DisplayCourseDescription(string courseCode)
+    {
+        string description = courseCode switch
+        {
+            "BSCS" => "Bachelor of Science in Computer Science",
+            "BSIT" => "Bachelor of Science in Information Technology",
+            "BSBA" => "Bachelor of Science in Business Administration",
+            "BSAIS" => "Bachelor of Science in Accounting Information System",
+            "BSA" => "Bachelor of Science in Accountancy",
+            "BSHM" => "Bachelor of Science in Hospitality Management",
+            "BACOMM" => "Bachelor of Arts in Communication",
+            "BMMA" => "Bachelor of Multimedia Arts",
+            "BSTM" => "Bachelor of Science in Tourism Management",
+            _ => "Description not available"
+        };
+        Console.WriteLine($"Course Description: {description}");
+    }
+
     // Method to determine if the program should rerun
     static bool ShouldRerun()
     {
@@ -86,6 +135,5 @@
                 Console.WriteLine("\nInvalid input. Please enter 'y' or 'n'.");
                 return false; // Optionally stop the loop on invalid input
         }
-
     }
 }
