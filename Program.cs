@@ -1,3 +1,6 @@
+using System;
+using System.IO;
+
 internal class Program
 {
     private static void Main(string[] args)
@@ -28,14 +31,26 @@ internal class Program
 
             // Prompt user to select a course
             string selectedCourse = SelectCourse(courses);
-
-
+            Console.WriteLine($"You selected: {selectedCourse}");
             Console.WriteLine("------------------------------------------");
-            Console.WriteLine("You are now Enrolled in STI!!");
-            DisplayCourseDescription(selectedCourse);
+
+            // Check if required files exist
+            if (!CheckFiles())
+            {
+                // If files are missing, prompt to rerun the program
+                Console.WriteLine("Required files are missing. Please make sure all files are present.");
+                reRun = ShouldRerun();
+                continue; // Skip the rest of the loop if files are missing
+            }
+            Console.WriteLine("------------------------------------------");
 
             // Display full name
+            Console.WriteLine("\nYou are now Enrolled in STI!!!");
+            Console.WriteLine("------------------------------------------");
             Console.WriteLine($"Full name is: {studentLname}, {studentFname} {middleInitial}.");
+            DisplayCourseDescription(selectedCourse);
+            Console.WriteLine("------------------------------------------");
+
 
             // Determine if we should rerun
             reRun = ShouldRerun();
@@ -115,7 +130,42 @@ internal class Program
             "BSTM" => "Bachelor of Science in Tourism Management",
             _ => "Description not available"
         };
-        Console.WriteLine($"Course Description: {description}");
+        Console.WriteLine($"Your Course: {description}");
+    }
+
+    // Method to check if required files exist
+    static bool CheckFiles()
+    {
+        string directorPath = @"C:\Users\Zoey\Documents\SampleRequirements";
+
+        // File names
+        string[] filesToCheck = {
+            "Diploma.pdf",
+            "GoodMoral.pdf",
+            "form137.pdf",
+            "MedCert.pdf",
+            "PSA.pdf",
+        };
+
+        // Flag to track file completeness
+        bool allFilesExist = true;
+
+        // Loop to check if files exist
+        foreach (string fileName in filesToCheck)
+        {
+            string filePath = Path.Combine(directorPath, fileName);
+            if (File.Exists(filePath))
+            {
+                Console.WriteLine($"File {fileName} exists!");
+            }
+            else
+            {
+                Console.WriteLine($"File {fileName} does not exist!!!");
+                allFilesExist = false; // Mark as incomplete if any file is missing
+            }
+        }
+
+        return allFilesExist; // Return true if all files exist, false otherwise
     }
 
     // Method to determine if the program should rerun
